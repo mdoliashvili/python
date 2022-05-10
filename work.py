@@ -1,25 +1,19 @@
-import sqlite3
+import json
+import requests
+payload={'season': 2020, 'sort': 'asc'}
+result = requests.get('https://api-football-standings.azharimm.site/leagues/eng.1/standings', params=payload)
+res=result.json()
+res=json.loads(result.text)
+# print(res)
+# print(json.dumps(res, indent=4))
+with open('data.json','w')as file:
+    json.dump(res,file, indent=4)
 
-conn = sqlite3.connect("movies_ranking.sqlite")
-c=conn.cursor()
+print("გუნდის დასახელება: ", res['data']['standings'][0]['team']['name'])
+print("გუნდის აბრივიატურა: ", res['data']['standings'][0]['team']['abbreviation'])
+print("გუნდის მიერ გატანილი გოლების რაოდენობა: ",res['data']['standings'][0]['stats'][4]['value'])
+print("გუნდის მიერ გაშვებული გოლების რაოდენობა: ", res['data']['standings'][0]['stats'][5]['value'])
 
-c.execute("SELECT * FROM movies WHERE Genre='Comedy'") #ვირჩევ მხოლოდ ისეთ ფილმებს რომლის ჟანრიც კომედიაა
-a=c.fetchall() #ყველა შესაძლო ვარიანტი
-for x in a:
-    print(x)
-movie1= ('Dark knight', 'Drama','DC', 200, 2014) #ერთერთი ფილმი თავისი აღწერით
-c.execute('INSERT INTO movies(Film,Genre,LeadStudio,WorldWideGross,Year) VALUES(?,?,?,?,?)', movie1) #ვამატებთ ამ ფილმს movies ში
-
-c.execute("UPDATE movies SET Genre='Comedy' where film='Dark knight'")
-
-c.execute("DELETE From movies WHERE ID=78")
-
-
-
-
-
-
-
-
-
-conn.close()
+# print(result.text)
+# print(result.status_code)
+# print(result.headers)
